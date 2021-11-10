@@ -16,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::resource('photos', \App\Http\Controllers\OrderController::class)->except([
+Route::resource('/order', \App\Http\Controllers\OrderController::class)->except([
     'show','edit','update','destroy','index'
 ]);

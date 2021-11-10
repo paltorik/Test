@@ -4,7 +4,7 @@
 
 
 <a href="{{route('order.create')}}">
-
+    Создать новый заказ
 </a>
 
 

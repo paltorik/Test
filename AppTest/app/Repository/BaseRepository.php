@@ -21,10 +21,11 @@ abstract class BaseRepository implements IBaseRepository
 
     public function create(array $parameters): ?Collection
     {
+
         return $this->send_request($this->createUrl().'/create',['form_params'=>$parameters],'POST');
     }
 
-    protected function send_request(string $url=null,array $body=[],$method='GET'){
+    protected function send_request(string $url=null,array $body=[],$method='GET'):?Collection{
         try {
             $response = $this->client->request($method, $url,$body);
             if ($response->getStatusCode()==400){
@@ -33,13 +34,14 @@ abstract class BaseRepository implements IBaseRepository
         } catch (\Exception $e) {
             return null;
         }
+
         return $this->response($response->getBody()->getContents());
     }
     protected  function response($response): ?Collection
     {
         if ($response) {
             $collection=json_decode($response);
-            if (!$collection['success']){
+            if (!$collection->success){
                 return null;
             }
             return collect($collection);
@@ -50,11 +52,18 @@ abstract class BaseRepository implements IBaseRepository
         if ($parameter){
             return $this->ulr.'/'.$parameter.'/'.implode('/',$this->argument);
         }else{
+            if (count($this->argument)==0){
+                return $this->ulr;
+            }
             return $this->ulr.'/'.implode('/',$this->argument);
         }
 
     }
-    protected function createFilter(array $fields):string{
-        return array_walk($fields, function($a, &$b) { $b = 'filter['.$b.']';});
+    protected function createFilter(array $fields):array{
+        $fields=array_flip($fields);
+        array_walk($fields, function(&$a, $b) {
+            $a = 'filter['.$a.']';
+        });
+        return array_flip($fields);
     }
 }

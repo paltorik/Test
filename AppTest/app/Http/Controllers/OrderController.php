@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Repository\IOrderRepository;
 use App\Repository\OrdersRepository;
 use App\Repository\ProductRepository;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    private OrdersRepository $ordersRepository;
-    public function __constructor(OrdersRepository $ordersRepository){
+    public $ordersRepository;
+    public function __construct(IOrderRepository $ordersRepository){
+
         $this->ordersRepository=$ordersRepository;
     }
     /**
